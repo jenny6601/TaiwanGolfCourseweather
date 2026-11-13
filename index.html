@@ -8,7 +8,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>台灣高爾夫球場天氣預測 V30 精簡版</title>
+<title>台灣高爾夫球場天氣預測 V31.1 精簡修復版</title>
 <style>
 :root{--bg:#f2f5f7;--card:#fff;--ink:#17212b;--muted:#64748b;--line:#dfe6ec;--green:#126b4c;--blue:#1769aa;--amber:#b7791f;--red:#b42318}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Noto Sans TC",sans-serif}
@@ -182,7 +182,7 @@ footer{padding:10px 2px;font-size:11px}
 
 </head>
 <body>
-<header><div class="wrap"><h1>⛳ 台灣高爾夫球場天氣預測 V30 精簡版</h1><p>日期・球場・降雨與氣溫四項重點</p></div></header>
+<header><div class="wrap"><h1>⛳ 台灣高爾夫球場天氣預測 V31.1 精簡修復版</h1><p>日期・球場・降雨與氣溫四項重點</p></div></header>
 <main class="wrap">
 <section class="panel" id="coursePickerPanel">
 <h2 style="margin:0 0 10px">📅 日期與球場選擇</h2>
@@ -1053,6 +1053,8 @@ $("courseDate").value=fmt(now);
 $("courseDate").min=fmt(now);
 let maxDate=new Date();maxDate.setDate(maxDate.getDate()+16);$("courseDate").max=fmt(maxDate);
 let databaseAutoBusy=false;
+let lastSelectedCourse=null;
+let lastSelectedCourseButton=null;
 
 async function geocodeGolfCourse(c,button){
  const taiwan=(lat,lon)=>lat>=21.5&&lat<=25.5&&lon>=119&&lon<=122.5;
@@ -1103,6 +1105,8 @@ async function autoLoadDatabaseCourse(c,button){
  if(!date){$("courseAutoStatus").textContent="請先選擇日期、縣市，再按球場按鈕。";return;}
  if(databaseAutoBusy)return;
  databaseAutoBusy=true;
+ lastSelectedCourse=c;
+ lastSelectedCourseButton=button;
  $("courseList").querySelectorAll("button[data-course]").forEach(x=>{x.disabled=true;x.classList.toggle("course-selected",x===button);});
  try{
    const lat=Number(c.lat),lon=Number(c.lon);
@@ -1126,12 +1130,18 @@ $("courseList").addEventListener("click",event=>{
  if(c)autoLoadDatabaseCourse(c,button);
 });
 document.getElementById("quickCourseButtons").addEventListener("click",event=>{const btn=event.target.closest("button[data-quick-course]");if(!btn||databaseAutoBusy)return;const name=btn.dataset.quickCourse;const idx=taiwanCourses.findIndex(c=>c.name===name);if(idx<0)return;document.querySelectorAll("[data-quick-course]").forEach(x=>x.classList.toggle("quick-selected",x===btn));autoLoadDatabaseCourse(taiwanCourses[idx],btn);});
+// V31.1：已選球場後變更日期，沿用該球場固定座標重新載入。
+$("courseDate").addEventListener("change",()=>{
+ if(!lastSelectedCourse||!lastSelectedCourseButton)return;
+ if(databaseAutoBusy){$("courseAutoStatus").textContent="目前仍在載入，請稍候再變更日期。";return;}
+ autoLoadDatabaseCourse(lastSelectedCourse,lastSelectedCourseButton);
+});
 const modelDefs=[
  ["ECMWF IFS","ecmwf_ifs025"],
- ["NOAA GFS","gfs_seamless"],
+ ["NOAA GFS","ncep_gfs_seamless"],
  ["DWD ICON","icon_seamless"],
  ["JMA GSM","jma_seamless"],
- ["Canada GEM","gem_seamless"]
+ ["Canada GEM","cmc_gem_seamless"]
 ];
 const hourlyVars="temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover,uv_index";
 function wxIcon(code){if(code>=95)return "⛈️";if(code>=80)return "🌦️";if(code>=61)return "🌧️";if(code>=51)return "🌦️";if(code>=45)return "🌫️";if(code===0)return "☀️";if(code<=3)return "⛅";return "🌤️";}
@@ -1187,8 +1197,30 @@ function chart(id,series,maxVal,colors,labels=[],unit=""){
  });
 }
 async function getModel(lat,lon,model){
- const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=${hourlyVars}&models=${encodeURIComponent(model)}&timezone=Asia%2FTaipei&forecast_days=16&wind_speed_unit=kmh`;
- const res=await fetch(url);if(!res.ok)throw Error(`${model} HTTP ${res.status}`);return await res.json();
+ // V31.1：15秒逾時；完整欄位失敗時逐步縮減欄位重試，保留模型診斷。
+ const variableSets=[
+  hourlyVars,
+  "temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m",
+  "temperature_2m,precipitation,weather_code"
+ ];
+ const errors=[];
+ for(let i=0;i<variableSets.length;i++){
+  const params=new URLSearchParams({latitude:String(lat),longitude:String(lon),hourly:variableSets[i],timezone:"Asia/Taipei",forecast_days:"16",wind_speed_unit:"kmh"});
+  if(model)params.set("models",model);
+  const url="https://api.open-meteo.com/v1/forecast?"+params.toString();
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+  try{
+   const res=await fetch(url,{signal:controller.signal,cache:"no-store"});
+   const body=await res.json().catch(()=>({}));
+   if(!res.ok)throw Error(`HTTP ${res.status}${body.reason?": "+body.reason:""}`);
+   if(body.error)throw Error(body.reason||"API 回傳 error");
+   if(!body.hourly||!Array.isArray(body.hourly.time))throw Error("回應缺少 hourly.time");
+   if(i>0)console.warn(`[Open-Meteo] ${model||"Best Match"} 使用精簡欄位重試成功（第${i+1}組）`);
+   return body;
+  }catch(e){errors.push(`${model||"Best Match"} 欄位組${i+1}：${e.name==="AbortError"?"逾時（15秒）":e.message}`);}
+  finally{clearTimeout(timer);}
+ }
+ throw Error(errors.join("；"));
 }
 function extract(data,date){
  const h=data.hourly||{},times=h.time||[],out=[];
@@ -1268,7 +1300,16 @@ async function loadForecast(p,date){
  const results=await Promise.allSettled(modelDefs.map(m=>getModel(p.lat,p.lon,m[1])));
  results.forEach((r,i)=>{if(r.status==="fulfilled"){const rows=extract(r.value,date);if(rows.length)active.modelRows[modelDefs[i][0]]=rows;}});
  let names=Object.keys(active.modelRows);
- if(!names.length)throw Error("五組模型均未取得資料。請檢查網路、日期是否在預報範圍內，或 Open-Meteo 服務是否暫時不可用。");
+ // 五組指定模式全部失敗時，改用 Open-Meteo Best Match，避免整頁無資料。
+ if(!names.length){
+  $("status").textContent="五組指定模式未取得資料，正在改用 Open-Meteo Best Match…";
+  try{
+   const fallback=await getModel(p.lat,p.lon,null);
+   const fallbackRows=extract(fallback,date);
+   if(fallbackRows.length){active.modelRows["Open-Meteo Best Match"]=fallbackRows;names=Object.keys(active.modelRows);}
+  }catch(e){console.error("[Open-Meteo Best Match 備援失敗]",e);}
+ }
+ if(!names.length)throw Error("五組指定模式及 Best Match 備援均未取得資料。請稍後重試；詳細原因可於瀏覽器開發者工具 Console 查看。");
  let base=consensusRows(active.modelRows);
  if(!base.length)throw Error("所選日期沒有06:00–18:00逐時資料。");
  let rainProbInfo;try{rainProbInfo=await getRainProbability(p.lat,p.lon,date);base=base.map(x=>({...x,rain:rainProbInfo.rows[x.time]?.prob??null,rainMembers:rainProbInfo.rows[x.time]?.members??null}));}catch(e){rainProbInfo={source:'不可用',detail:'降雨機率服務未回傳資料：'+e.message};base=base.map(x=>({...x,rain:null}));}
