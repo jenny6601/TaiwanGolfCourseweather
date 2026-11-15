@@ -1135,64 +1135,57 @@ const modelDefs=[
 ];
 const hourlyVars="temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover,uv_index";
 function wxIcon(code){
- const n=Number(code),drizzle=n>=51&&n<=57,heavy=n===65||n===67||n===82||n>=95||n===63||n===81;
- if(n>=95)return '<svg viewBox="0 0 40 32" aria-label="雷雨"><path d="M8 21a8 8 0 0 1 1-16 11 11 0 0 1 20 3 7 7 0 0 1 2 13Z" fill="#30343b" stroke="#111827" stroke-width="1.8"/><path d="m17 20-4 8m12-8-4 8" stroke="#075985" stroke-width="2" stroke-linecap="round"/><path d="m22 12-5 8h5l-2 6 7-9h-5l2-5Z" fill="#facc15"/></svg>';
- if(heavy)return '<svg viewBox="0 0 40 32" aria-label="大雨"><path d="M7 21a8 8 0 0 1 1-16 11 11 0 0 1 20 3 7 7 0 0 1 2 13Z" fill="#3b4652"/><path d="m9 23-2 5m8-5-2 5m8-5-2 5m8-5-2 5m-12 1-2 5m8-5-2 5m8-5-2 5" stroke="#3182ce" stroke-width="2.1" stroke-linecap="round"/></svg>';
- if(drizzle||n>=61||n>=80){
-  const fill=heavy?"#30343b":"#fff",stroke="#111827",drop="#075985",sw=drizzle?2:2.2;
-  const drops=heavy?'<path d="m12 22-2 5m10-5-2 5m10-5-2 5" stroke="'+drop+'" stroke-width="'+sw+'" stroke-linecap="round"/>':'<path d="m14 22-2 5m8-5-2 5m8-5-2 5" stroke="'+drop+'" stroke-width="'+sw+'" stroke-linecap="round"/>';
-  return '<svg viewBox="0 0 40 32" aria-label="'+(drizzle?"毛毛雨":"降雨")+'"><path d="M7 21a8 8 0 0 1 1-16 11 11 0 0 1 20 3 7 7 0 0 1 2 13Z" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.8"/>'+drops+'</svg>';
- }
- if(n>=45)return '<svg viewBox="0 0 40 32" aria-label="有霧"><path d="M7 15h26M4 21h30M9 27h22" stroke="#374151" stroke-width="2" stroke-linecap="round"/></svg>';
- if(n===0)return '<svg viewBox="0 0 40 32" aria-label="晴朗"><circle cx="20" cy="16" r="7.5" fill="#fbbf24" stroke="#92400e" stroke-width="1.8"/><path d="M20 1v5m0 20v5M5 16h5m20 0h5M9.4 5.4 13 9m14 14 3.6 3.6M30.6 5.4 27 9M13 23l-3.6 3.6" stroke="#92400e" stroke-width="2.2" stroke-linecap="round"/></svg>';
- if(n<=3)return '<svg viewBox="0 0 40 32" aria-label="晴時多雲"><circle cx="12" cy="10" r="6" fill="#fbbf24" stroke="#92400e" stroke-width="1.5"/><path d="M12 1v3m0 12v3M3 10h3m12 0h3M5.5 3.5l2.2 2.2m8.6 8.6 2.2 2.2m0-13-2.2 2.2m-8.6 8.6-2.2 2.2" stroke="#b45309" stroke-width="1.8" stroke-linecap="round"/><path d="M10 24a7 7 0 0 1 1-14 10 10 0 0 1 18 3 6 6 0 0 1 2 11Z" fill="#fff" stroke="#111827" stroke-width="1.8"/></svg>';
- return '<svg viewBox="0 0 40 32" aria-label="多雲"><path d="M7 23a8 8 0 0 1 1-16 11 11 0 0 1 20 3 7 7 0 0 1 2 13Z" fill="#fff" stroke="#111827" stroke-width="1.8"/></svg>';
+ const n=Number(code),svg=(body,label)=>'<svg class="wx-icon" viewBox="0 0 48 42" role="img" aria-label="'+label+'" xmlns="http://www.w3.org/2000/svg">'+body+'</svg>';
+ const sun='<circle cx="16" cy="13" r="7" fill="#FDBA32" stroke="#B7791F" stroke-width="1.5"/><g stroke="#D97706" stroke-width="2" stroke-linecap="round"><path d="M16 1v4M16 21v4M4 13H1m30 0h-4M7 4l3 3m12 12 3 3m0-18-3 3M10 19l-3 3"/></g>';
+ const cloud='<path d="M10 30h27a8 8 0 0 0 0-16 12 12 0 0 0-23-2A9 9 0 0 0 10 30Z" fill="url(#cloudFill)" stroke="#64748B" stroke-width="1.6" stroke-linejoin="round"/>';
+ const defs='<defs><linearGradient id="cloudFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#CBD5E1"/></linearGradient><linearGradient id="rainFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#38BDF8"/><stop offset="1" stop-color="#0369A1"/></linearGradient></defs>';
+ if(n>=95)return svg(defs+'<path d="M9 25h27a8 8 0 0 0 0-16 12 12 0 0 0-23-2 9 9 0 0 0-4 18Z" fill="#475569" stroke="#1E293B" stroke-width="1.8"/><path d="m25 19-8 12h7l-2 9 12-15h-8l3-6Z" fill="#FACC15" stroke="#A16207" stroke-width="1"/><path d="m12 29-2 5m11-5-2 5" stroke="#0EA5E9" stroke-width="2.4" stroke-linecap="round"/>','雷雨');
+ if(n===65||n===67||n===82||n===63||n===81)return svg(defs+'<path d="M9 24h28a8 8 0 0 0 0-16 12 12 0 0 0-23-2 9 9 0 0 0-5 18Z" fill="#475569" stroke="#1E293B" stroke-width="1.8"/><g stroke="url(#rainFill)" stroke-width="3" stroke-linecap="round"><path d="m13 29-3 7m12-7-3 7m12-7-3 7"/></g>','大雨');
+ if((n>=51&&n<=57)||n>=61||n>=80)return svg(defs+cloud+'<g stroke="#0284C7" stroke-width="2.4" stroke-linecap="round"><path d="m15 32-2 5m12-5-2 5m11-5-2 5"/></g>','降雨');
+ if(n>=45)return svg('<path d="M7 13h34M4 21h38M8 29h32M13 37h22" stroke="#64748B" stroke-width="2.8" stroke-linecap="round"/><path d="M10 8h28" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>','有霧');
+ if(n===0)return svg(defs+sun,'晴朗');
+ if(n<=2)return svg(defs+sun+cloud,'晴時多雲');
+ return svg(defs+cloud,'多雲');
 }
 function wx(code){if(code>=95)return "雷雨";if(code>=80)return "陣雨";if(code>=61)return "降雨";if(code>=51)return "毛毛雨";if(code>=45)return "有霧";if(code===0)return "晴朗";if(code<=3)return "多雲";return "天氣變化";}
 function score(rain,wind,gust,feel){let v=100-(rain||0)*0.55-Math.max(0,(wind||0)-12)*1.2-Math.max(0,(gust||0)-22)*0.8-Math.max(0,Math.abs((feel??24)-24)-7)*2;return Math.max(0,Math.min(100,Math.round(v)));}
 function cls(v){return v>=75?"good":v>=50?"mid":"bad";}
 function dir(v){if(v===null||v===undefined)return "—";return ["北","東北","東","東南","南","西南","西","西北"][Math.round(v/45)%8];}
 function apparentFeelIcon(v){
- if(v===null||v===undefined||!Number.isFinite(Number(v)))return "🙂";
- const n=Number(v);
- if(n<=18)return "🥶";
- if(n>=30)return "🥵";
- return "🙂";
+ if(v===null||v===undefined||!Number.isFinite(Number(v)))return "normal";
+ const n=Number(v);if(n<=18)return "cold";if(n>=30)return "hot";return "normal";
 }
 function airTempColor(v){
  if(v===null||v===undefined||!Number.isFinite(Number(v)))return "#64748b";
- const n=Number(v);
- if(n<=15)return "#2563eb";
- if(n<=22)return "#0891b2";
- if(n<=28)return "#ea8a18";
- return "#dc2626";
+ const n=Number(v);if(n<=15)return "#2563eb";if(n<=22)return "#0891b2";if(n<=28)return "#ea8a18";return "#dc2626";
 }
-function displayTemp(v){
- return v===null||v===undefined||!Number.isFinite(Number(v))?"—":Number(v).toFixed(1);
-}
+function displayTemp(v){return v===null||v===undefined||!Number.isFinite(Number(v))?"—":Number(v).toFixed(1);}
 function thermometerHTML(v){
  const color=airTempColor(v);
- return '<span class="temp-value" style="color:'+color+';font-weight:700;white-space:nowrap"><svg aria-hidden="true" viewBox="0 0 16 22" width="13" height="18" style="vertical-align:-3px;margin-right:3px"><path d="M6 12.5V4a2 2 0 0 1 4 0v8.5a5 5 0 1 1-4 0Z" fill="none" stroke="'+color+'" stroke-width="1.8"/><path d="M8 7v9" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/><circle cx="8" cy="17" r="2.2" fill="'+color+'"/></svg>'+displayTemp(v)+'</span>';
+ return '<span class="temp-value" style="color:'+color+';font-weight:700;white-space:nowrap"><svg aria-hidden="true" viewBox="0 0 20 28" width="16" height="21" style="vertical-align:-5px;margin-right:3px"><defs><linearGradient id="thermoFill" x1="0" y1="1" x2="0" y2="0"><stop stop-color="'+color+'"/><stop offset="1" stop-color="#fff"/></linearGradient></defs><path d="M7 16V5a3 3 0 0 1 6 0v11a6 6 0 1 1-6 0Z" fill="#fff" stroke="'+color+'" stroke-width="2"/><path d="M10 9v11" stroke="'+color+'" stroke-width="3" stroke-linecap="round"/><circle cx="10" cy="21" r="3.5" fill="'+color+'"/></svg>'+displayTemp(v)+'</span>';
 }
 function apparentFeelHTML(v){
- const icon=apparentFeelIcon(v);
- const color=icon==="🥶"?"#2563eb":icon==="🥵"?"#dc2626":"#16a34a";
- return '<span class="feel-temp" style="color:'+color+';font-weight:700;white-space:nowrap"><span aria-hidden="true" style="margin-right:3px">'+icon+'</span>'+displayTemp(v)+'</span>';
+ const state=apparentFeelIcon(v),color=state==="cold"?"#2563eb":state==="hot"?"#dc2626":"#16a34a";
+ const face=state==="cold"?'<circle cx="12" cy="12" r="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/><path d="M9 10h.5m5 0h.5M9 16q3-3 6 0" stroke="#1D4ED8" stroke-width="1.5" stroke-linecap="round"/>':state==="hot"?'<circle cx="12" cy="12" r="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/><path d="M9 10h.5m5 0h.5M9 15q3 4 6 0" stroke="#B91C1C" stroke-width="1.5" stroke-linecap="round"/>':'<circle cx="12" cy="12" r="8" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/><path d="M9 10h.5m5 0h.5M9 15q3 3 6 0" stroke="#15803D" stroke-width="1.5" stroke-linecap="round"/>';
+ return '<span class="feel-temp" style="color:'+color+';font-weight:700;white-space:nowrap"><svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" style="vertical-align:-4px;margin-right:3px">'+face+'</svg>'+displayTemp(v)+'</span>';
 }
 function rainProbHTML(v){
  if(v===null||v===undefined)return "—";
- const n=Math.max(0,Math.min(100,Math.round(Number(v))));
- const level=n>=60?"high":n>=30?"mid":"low";
- const icon=n>=60?'<svg viewBox="0 0 40 36" aria-hidden="true" style="width:27px;height:25px;vertical-align:-5px"><path d="M4 17Q5 5 20 4Q35 5 36 17Q32 14 28 17Q24 14 20 17Q16 14 12 17Q8 14 4 17Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="2" stroke-linejoin="round"/><path d="M20 17V29Q20 34 25 32" fill="none" stroke="#1f2937" stroke-width="2.8" stroke-linecap="round"/><path d="M9 22l-2 4m12-4-2 4m12-4-2 4" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/></svg>':n>=30?'<svg viewBox="0 0 40 36" aria-hidden="true" style="width:27px;height:24px;vertical-align:-5px"><path d="M12 10Q13 3 20 3Q27 3 28 10L34 16 29 21 27 18 27 33 13 33 13 18 11 21 6 16Z" fill="#38bdf8" stroke="#075985" stroke-width="2" stroke-linejoin="round"/><path d="M15 11 20 16 25 11M20 16V32M17 22h2m2 0h2" fill="none" stroke="#0c4a6e" stroke-width="1.8" stroke-linecap="round"/></svg>':'<svg viewBox="0 0 40 32" aria-hidden="true" style="width:27px;height:22px;vertical-align:-5px"><path d="M5 20Q7 12 17 9Q25 7 31 13L37 17Q31 20 24 19L12 22Q7 23 5 20Z" fill="#fbbf24" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/><path d="M5 20Q16 18 26 19L37 17Q33 24 22 24L10 24Q6 23 5 20Z" fill="#f59e0b" stroke="#78350f" stroke-width="1.5"/><path d="M18 9Q21 5 26 7" fill="none" stroke="#78350f" stroke-width="1.5"/></svg>';
- const label=n>=60?"高降雨機率":n>=30?"中降雨機率":"低降雨機率";
- return `<span class="rainpill ${level}" title="${label}：${n}%"><span aria-hidden="true">${icon}</span><b>${n}%</b></span>`;
+ const n=Math.max(0,Math.min(100,Math.round(Number(v)))),level=n>=60?"high":n>=30?"mid":"low";
+ const common='viewBox="0 0 48 42" aria-hidden="true" style="width:32px;height:29px;vertical-align:-7px;margin-right:3px"';
+ const cap='<svg '+common+'><path d="M8 25Q9 11 23 9Q37 9 39 24Q29 28 8 25Z" fill="#FBBF24" stroke="#92400E" stroke-width="2"/><path d="M8 25Q23 23 39 24Q34 32 18 31Q10 30 8 25Z" fill="#F59E0B" stroke="#92400E" stroke-width="1.6"/><path d="M22 10q5-5 10 0" fill="none" stroke="#92400E" stroke-width="1.7"/><path d="M15 18q8-4 16-1" fill="none" stroke="#FDE68A" stroke-width="1.5"/></svg>';
+ const jacket='<svg '+common+'><path d="M17 8q7-7 14 0l5 7 7 7-5 6-5-4v13H15V24l-5 4-5-6 7-7Z" fill="#38BDF8" stroke="#075985" stroke-width="2" stroke-linejoin="round"/><path d="m17 9 7 7 7-7M24 16v21" fill="none" stroke="#075985" stroke-width="1.8" stroke-linecap="round"/><path d="M20 23h2m4 0h2" stroke="#E0F2FE" stroke-width="2" stroke-linecap="round"/><path d="M19 7q5-5 10 0" fill="none" stroke="#E0F2FE" stroke-width="1.5"/></svg>';
+ const umbrella='<svg '+common+'><path d="M4 20Q6 5 24 4Q42 5 44 20Q39 16 34 20Q29 16 24 20Q19 16 14 20Q9 16 4 20Z" fill="#EF4444" stroke="#7F1D1D" stroke-width="2" stroke-linejoin="round"/><path d="M24 20v13q0 6 7 4" fill="none" stroke="#1F2937" stroke-width="2.8" stroke-linecap="round"/><path d="m11 25-3 6m16-6-3 6m16-6-3 6" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round"/></svg>';
+ const icon=n>=60?umbrella:n>=30?jacket:cap,label=n>=60?"高降雨機率":n>=30?"中降雨機率":"低降雨機率";
+ return '<span class="rainpill '+level+'" title="'+label+'：'+n+'%"><span aria-hidden="true">'+icon+'</span><b>'+n+'%</b></span>';
 }
 function rainAmountHTML(v){
  if(v===null||v===undefined)return "—";
- const n=Number(v),level=n>=5?"heavy":n>0?"light":"none";
- const drops=n<=0?0:n<1?1:n<5?2:3;
- const icon=drops?"💧".repeat(drops):"☁️";
- return `<span class="rainamount ${level}" title="預報雨量 ${n.toFixed(1)} mm">${icon?'<span aria-hidden="true">'+icon+'</span>':''}<b>${n.toFixed(1)} mm</b></span>`;
+ const n=Number(v),level=n>=5?"heavy":n>0?"light":"none",drops=n<=0?0:n<1?1:n<5?2:3;
+ const cloud='<svg viewBox="0 0 40 30" aria-hidden="true" style="width:27px;height:21px;vertical-align:-5px;margin-right:3px"><path d="M7 23h26a7 7 0 0 0 0-14 10 10 0 0 0-19-2 8 8 0 0 0-7 16Z" fill="#CBD5E1" stroke="#64748B" stroke-width="1.7"/></svg>';
+ const drop='<svg viewBox="0 0 18 24" aria-hidden="true" style="width:13px;height:19px;vertical-align:-4px;margin-right:1px"><path d="M9 1C7 6 2 11 2 15a7 7 0 0 0 14 0C16 11 11 6 9 1Z" fill="url(#dropGradient)" stroke="#0369A1" stroke-width="1.2"/><path d="M5 15q0 3 3 4" fill="none" stroke="#E0F2FE" stroke-width="1.5" stroke-linecap="round"/><defs><linearGradient id="dropGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7DD3FC"/><stop offset="1" stop-color="#0284C7"/></linearGradient></defs></svg>';
+ const icons=drops?drop.repeat(drops):cloud;
+ return '<span class="rainamount '+level+'" title="預報雨量 '+n.toFixed(1)+' mm"><span aria-hidden="true">'+icons+'</span><b>'+n.toFixed(1)+' mm</b></span>';
 }
 function golfabilityScore(rows){if(rows.length!==4||rows.some(x=>!x.available))return null;if(rows.some(x=>x.code>=95))return 0;return Math.round(rows.reduce((z,x)=>z+score(x.rain,x.wind,x.gust,x.feel),0)/4);}
 function golfScoreLabel(v){return v>=85?"非常適合":v>=70?"適合":v>=55?"尚可，留意天氣":"不建議";}
