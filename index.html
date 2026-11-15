@@ -1163,7 +1163,7 @@ function chart(id,series,maxVal,colors,labels=[],unit="",chartTheme="",weatherCo
  const vals=series.flat().filter(v=>v!==null&&Number.isFinite(v));if(!vals.length)return;
  const left=48,right=12,topPad=chartTheme==="temperature"?38:16,bottom=42,plotH=h-topPad-bottom,plotW=w-left-right;
  const top=maxVal||Math.max(...vals,1);
- if(chartTheme==="temperature"&&weatherCodes.length){ctx.save();ctx.font="19px sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";weatherCodes.forEach((code,i)=>{if(code===null||code===undefined||!Number.isFinite(Number(code)))return;ctx.fillText(wxIcon(Number(code)),xAt(i),18);});ctx.restore();}\n ctx.font="12px sans-serif";ctx.textAlign="right";ctx.textBaseline="middle";
+ ctx.font="12px sans-serif";ctx.textAlign="right";ctx.textBaseline="middle";
  for(let t=0;t<=4;t++){
   const value=top*t/4,y=topPad+plotH-(value/top)*plotH;
   ctx.strokeStyle="#e2e8f0";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();
@@ -1171,6 +1171,7 @@ function chart(id,series,maxVal,colors,labels=[],unit="",chartTheme="",weatherCo
  }
  ctx.strokeStyle="#94a3b8";ctx.beginPath();ctx.moveTo(left,topPad);ctx.lineTo(left,topPad+plotH);ctx.lineTo(w-right,topPad+plotH);ctx.stroke();
  const n=Math.max(1,series[0]?.length||0),xAt=i=>left+(i*plotW/Math.max(1,n-1));
+ if(chartTheme==="temperature"&&weatherCodes.length){ctx.save();ctx.font="19px sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";weatherCodes.forEach((code,i)=>{if(code===null||code===undefined||!Number.isFinite(Number(code)))return;ctx.fillText(wxIcon(Number(code)),xAt(i),18);});ctx.restore();}
  ctx.textAlign="center";ctx.textBaseline="top";ctx.fillStyle="#475569";
  const step=Math.max(1,Math.ceil(n/5));
  for(let i=0;i<n;i+=step)ctx.fillText(labels[i]||String(i+1),xAt(i),topPad+plotH+8);
