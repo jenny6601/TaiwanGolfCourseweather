@@ -1167,14 +1167,17 @@ function airTempColor(v){
  if(n<=28)return "#ea8a18";
  return "#dc2626";
 }
+function displayTemp(v){
+ return v===null||v===undefined||!Number.isFinite(Number(v))?"—":Number(v).toFixed(1);
+}
 function thermometerHTML(v){
  const color=airTempColor(v);
- return '<span class="temp-value" style="color:'+color+';font-weight:700;white-space:nowrap"><svg aria-hidden="true" viewBox="0 0 16 22" width="13" height="18" style="vertical-align:-3px;margin-right:3px"><path d="M6 12.5V4a2 2 0 0 1 4 0v8.5a5 5 0 1 1-4 0Z" fill="none" stroke="'+color+'" stroke-width="1.8"/><path d="M8 7v9" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/><circle cx="8" cy="17" r="2.2" fill="'+color+'"/></svg>'+fmt(v)+'</span>';
+ return '<span class="temp-value" style="color:'+color+';font-weight:700;white-space:nowrap"><svg aria-hidden="true" viewBox="0 0 16 22" width="13" height="18" style="vertical-align:-3px;margin-right:3px"><path d="M6 12.5V4a2 2 0 0 1 4 0v8.5a5 5 0 1 1-4 0Z" fill="none" stroke="'+color+'" stroke-width="1.8"/><path d="M8 7v9" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/><circle cx="8" cy="17" r="2.2" fill="'+color+'"/></svg>'+displayTemp(v)+'</span>';
 }
 function apparentFeelHTML(v){
  const icon=apparentFeelIcon(v);
  const color=icon==="🥶"?"#2563eb":icon==="🥵"?"#dc2626":"#16a34a";
- return '<span class="feel-temp" style="color:'+color+';font-weight:700;white-space:nowrap"><span aria-hidden="true" style="margin-right:3px">'+icon+'</span>'+fmt(v)+'</span>';
+ return '<span class="feel-temp" style="color:'+color+';font-weight:700;white-space:nowrap"><span aria-hidden="true" style="margin-right:3px">'+icon+'</span>'+displayTemp(v)+'</span>';
 }
 function rainProbHTML(v){
  if(v===null||v===undefined)return "—";
