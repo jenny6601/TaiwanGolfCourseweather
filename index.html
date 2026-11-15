@@ -1152,6 +1152,30 @@ function wx(code){if(code>=95)return "雷雨";if(code>=80)return "陣雨";if(cod
 function score(rain,wind,gust,feel){let v=100-(rain||0)*0.55-Math.max(0,(wind||0)-12)*1.2-Math.max(0,(gust||0)-22)*0.8-Math.max(0,Math.abs((feel??24)-24)-7)*2;return Math.max(0,Math.min(100,Math.round(v)));}
 function cls(v){return v>=75?"good":v>=50?"mid":"bad";}
 function dir(v){if(v===null||v===undefined)return "—";return ["北","東北","東","東南","南","西南","西","西北"][Math.round(v/45)%8];}
+function apparentFeelIcon(v){
+ if(v===null||v===undefined||!Number.isFinite(Number(v)))return "🙂";
+ const n=Number(v);
+ if(n<=18)return "🥶";
+ if(n>=30)return "🥵";
+ return "🙂";
+}
+function airTempColor(v){
+ if(v===null||v===undefined||!Number.isFinite(Number(v)))return "#64748b";
+ const n=Number(v);
+ if(n<=15)return "#2563eb";
+ if(n<=22)return "#0891b2";
+ if(n<=28)return "#ea8a18";
+ return "#dc2626";
+}
+function thermometerHTML(v){
+ const color=airTempColor(v);
+ return '<span class="temp-value" style="color:'+color+';font-weight:700;white-space:nowrap"><svg aria-hidden="true" viewBox="0 0 16 22" width="13" height="18" style="vertical-align:-3px;margin-right:3px"><path d="M6 12.5V4a2 2 0 0 1 4 0v8.5a5 5 0 1 1-4 0Z" fill="none" stroke="'+color+'" stroke-width="1.8"/><path d="M8 7v9" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/><circle cx="8" cy="17" r="2.2" fill="'+color+'"/></svg>'+fmt(v)+'</span>';
+}
+function apparentFeelHTML(v){
+ const icon=apparentFeelIcon(v);
+ const color=icon==="🥶"?"#2563eb":icon==="🥵"?"#dc2626":"#16a34a";
+ return '<span class="feel-temp" style="color:'+color+';font-weight:700;white-space:nowrap"><span aria-hidden="true" style="margin-right:3px">'+icon+'</span>'+fmt(v)+'</span>';
+}
 function rainProbHTML(v){
  if(v===null||v===undefined)return "—";
  const n=Math.round(v),level=n>=60?"high":n>=30?"mid":"low";
@@ -1314,7 +1338,7 @@ async function loadForecast(p,date){
  const rainTotal=valid.reduce((z,x)=>z+(x.mm||0),0),wet=valid.filter(x=>(x.mm||0)>0.1).sort((a,b)=>(b.mm||0)-(a.mm||0))[0],four=valid.map((x,i)=>({start:x.time,total:valid.slice(i,i+4).reduce((z,y)=>z+(y.mm||0),0)})).filter(x=>valid.findIndex(y=>y.time===x.start)+3<valid.length).sort((a,b)=>b.total-a.total)[0];
  $("rainMetrics").innerHTML=[["06–18時最高降雨機率",fmt(mx("rain"),0)+"%"],["06–18時累積雨量",fmt(rainTotal)+" mm"],["雨量最大小時",wet?wet.time+"｜"+fmt(wet.mm)+" mm":"—"],["最大連續4小時雨量",four?four.start+"起｜"+fmt(four.total)+" mm":"—"],["機率資料來源",rainProbInfo.source]].map(([a,b])=>`<div class="metric"><small>${a}</small><strong style="font-size:18px">${b}</strong></div>`).join("");
  $("rainMethodStatus").textContent=rainProbInfo.detail+`。雨量為五模式逐時中位數；每小時同時呈現五模式範圍，累積雨量為06:00–18:00逐時合計。`;
- $("hourRows").innerHTML=base.map(x=>`<tr><td><b>${x.time}</b></td><td><span class="wxcell"><span class="wxemoji">${wxIcon(x.code)}</span>${wx(x.code)}</span></td><td>${rainProbHTML(x.rain)}</td><td>${amountRangeHTML(x)}</td><td><span class="temp-value"><span aria-hidden="true">🌡️</span>${fmt(x.temp)}</span></td><td><span class="feel-temp"><span aria-hidden="true">🥵</span>${fmt(x.feel)}</span></td><td>${fmt(x.wind)}</td><td>${fmt(x.gust)}</td><td>${dir(x.dir)} ${x.dir??"—"}${x.dir===null?"":"°"}</td><td>${x.rh??"—"}%</td><td>${x.cloud??"—"}%</td><td>${fmt(x.uv)}</td><td class="${cls(score(x.rain,x.wind,x.gust,x.feel))}">${score(x.rain,x.wind,x.gust,x.feel)}/100</td></tr>`).join("");
+ $("hourRows").innerHTML=base.map(x=>`<tr><td><b>${x.time}</b></td><td><span class="wxcell"><span class="wxemoji">${wxIcon(x.code)}</span>${wx(x.code)}</span></td><td>${rainProbHTML(x.rain)}</td><td>${amountRangeHTML(x)}</td><td>${thermometerHTML(x.temp)}</td><td>${apparentFeelHTML(x.feel)}</td><td>${fmt(x.wind)}</td><td>${fmt(x.gust)}</td><td>${dir(x.dir)} ${x.dir??"—"}${x.dir===null?"":"°"}</td><td>${x.rh??"—"}%</td><td>${x.cloud??"—"}%</td><td>${fmt(x.uv)}</td><td class="${cls(score(x.rain,x.wind,x.gust,x.feel))}">${score(x.rain,x.wind,x.gust,x.feel)}/100</td></tr>`).join("");
  const chartTimes=base.map(x=>x.time);
  chart("windChart",[base.map(x=>x.wind),base.map(x=>x.gust)],Math.max(30,mx("gust")||30),["#1769aa","#d97706"],chartTimes," km/h");
  chart("rainChart",[base.map(x=>x.rain)],100,["#15966a"],chartTimes,"%","rainProbability");
