@@ -1262,7 +1262,8 @@ function chart(id,series,maxVal,colors,labels=[],unit="",chartTheme="",weatherCo
      ctx.restore();
     }
    }else if(chartTheme==="rainProbability"){
-    const p=Math.max(0,Math.min(100,Math.round(v))),cy=18;
+    // 圖示錨定在該小時曲線資料點，隨降雨機率數值同步升降。
+    const p=Math.max(0,Math.min(100,Math.round(v))),cy=y;
     ctx.save();ctx.lineCap="round";ctx.lineJoin="round";
     if(p>=60){
      ctx.beginPath();ctx.moveTo(x-10,cy+1);ctx.quadraticCurveTo(x-9,cy-11,x,cy-11);ctx.quadraticCurveTo(x+9,cy-11,x+10,cy+1);ctx.quadraticCurveTo(x+5,cy-2,x+2,cy+1);ctx.quadraticCurveTo(x,cy-2,x-2,cy+1);ctx.quadraticCurveTo(x-5,cy-2,x-10,cy+1);ctx.closePath();ctx.fillStyle="#EF4444";ctx.strokeStyle="#7F1D1D";ctx.lineWidth=2;ctx.fill();ctx.stroke();
@@ -1273,7 +1274,7 @@ function chart(id,series,maxVal,colors,labels=[],unit="",chartTheme="",weatherCo
      ctx.beginPath();ctx.moveTo(x-5,cy-7);ctx.quadraticCurveTo(x,cy-1,x+5,cy-7);ctx.moveTo(x,cy-2);ctx.lineTo(x,cy+12);ctx.strokeStyle="#A16207";ctx.lineWidth=1.7;ctx.stroke();
     }else{
      // User-provided black outline golf-cap icon, matching the table and legend.
-     ctx.translate(x-12,cy+1);ctx.scale(0.043,0.043);
+     ctx.translate(x-12,cy-7);ctx.scale(0.043,0.043);
      ctx.beginPath();ctx.moveTo(120,198);ctx.bezierCurveTo(122,88,208,5,331,5);ctx.bezierCurveTo(454,5,542,103,545,236);ctx.bezierCurveTo(546,283,490,292,425,270);
      ctx.moveTo(120,198);ctx.bezierCurveTo(210,191,323,217,425,270);
      ctx.moveTo(350,237);ctx.bezierCurveTo(344,177,341,91,331,5);
