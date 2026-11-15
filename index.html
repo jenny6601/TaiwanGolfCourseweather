@@ -1171,7 +1171,7 @@ function chart(id,series,maxVal,colors,labels=[],unit="",chartTheme="",weatherCo
  }
  ctx.strokeStyle="#94a3b8";ctx.beginPath();ctx.moveTo(left,topPad);ctx.lineTo(left,topPad+plotH);ctx.lineTo(w-right,topPad+plotH);ctx.stroke();
  const n=Math.max(1,series[0]?.length||0),xAt=i=>left+(i*plotW/Math.max(1,n-1));
- if(chartTheme==="temperature"&&weatherCodes.length){ctx.save();ctx.font="19px sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";weatherCodes.forEach((code,i)=>{if(code===null||code===undefined||!Number.isFinite(Number(code)))return;ctx.fillText(wxIcon(Number(code)),xAt(i),18);});ctx.restore();}
+ if(chartTheme==="temperature"&&weatherCodes.length){weatherCodes.forEach((item,i)=>{if(item===null||item===undefined)return;const code=typeof item==="object"?Number(item.code):Number(item),rainNow=typeof item==="object"&&Number(item.mm)>0;if(!Number.isFinite(code))return;const x=xAt(i);if(rainNow){ctx.save();ctx.lineCap="round";ctx.lineJoin="round";ctx.fillStyle="#34495e";ctx.strokeStyle="#075985";ctx.lineWidth=2.8;ctx.beginPath();ctx.arc(x-5,12,5.2,Math.PI*.85,Math.PI*1.95);ctx.arc(x+1,9,6.3,Math.PI*1.05,Math.PI*1.95);ctx.arc(x+7,13,4.8,Math.PI*1.35,Math.PI*.55);ctx.closePath();ctx.fill();ctx.beginPath();ctx.moveTo(x-6,18);ctx.lineTo(x-8,23);ctx.moveTo(x,18);ctx.lineTo(x-2,23);ctx.moveTo(x+6,18);ctx.lineTo(x+4,23);ctx.stroke();ctx.restore();}else{ctx.save();ctx.font="20px sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(wxIcon(code),x,16);ctx.restore();}});}
  ctx.textAlign="center";ctx.textBaseline="top";ctx.fillStyle="#475569";
  const step=Math.max(1,Math.ceil(n/5));
  for(let i=0;i<n;i+=step)ctx.fillText(labels[i]||String(i+1),xAt(i),topPad+plotH+8);
@@ -1306,7 +1306,7 @@ async function loadForecast(p,date){
  chart("windChart",[base.map(x=>x.wind),base.map(x=>x.gust)],Math.max(30,mx("gust")||30),["#1769aa","#d97706"],chartTimes," km/h");
  chart("rainChart",[base.map(x=>x.rain)],100,["#15966a"],chartTimes,"%","rainProbability");
  chart("rainAmountChart",[base.map(x=>x.mm)],Math.max(1,Math.ceil((Math.max(...base.map(x=>x.mm||0),0))*1.2)),["#2563eb"],chartTimes," mm","rainAmount");
- chart("tempChart",[base.map(x=>x.temp),base.map(x=>x.feel)],Math.max(40,mx("temp")||40,mx("feel")||40),["#1769aa","#dc2626"],chartTimes,"°C","temperature",base.map(x=>x.code));
+ chart("tempChart",[base.map(x=>x.temp),base.map(x=>x.feel)],Math.max(40,mx("temp")||40,mx("feel")||40),["#1769aa","#dc2626"],chartTimes,"°C","temperature",base.map(x=>({code:x.code,mm:x.mm})));
  const windows=[];for(let i=0;i<=base.length-4;i++){const group=base.slice(i,i+4);if(group.length===4){const v=golfabilityScore(group);if(v!==null)windows.push({time:group[0].time,v,rain:group.reduce((z,x)=>z+(x.mm||0),0),gust:Math.max(...group.map(x=>x.gust||0))});}}
  windows.sort((a,b)=>b.v-a.v);
  $("teeAdvice").innerHTML=windows.length?windows.slice(0,3).map((x,i)=>`<p><b>推薦時段 ${i+1}：${x.time} 起連續4小時</b>｜${x.v}/100｜${golfScoreLabel(x.v)}｜雨量 ${x.rain.toFixed(1)} mm｜最大陣風 ${x.gust.toFixed(1)} km/h</p>`).join(""):"目前沒有完整四小時資料可供評估。";
