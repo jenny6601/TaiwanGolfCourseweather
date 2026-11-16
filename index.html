@@ -1563,7 +1563,7 @@ async function loadForecast(p,date){
  loadRadar(p.lat,p.lon);
  loadV28ProviderCache(p.name,date);
  if(compactLiveTimer)clearInterval(compactLiveTimer);
- compactLiveTimer=setInterval(()=>compactRefreshLive(liveCourse),10*60*1000);
+ compactLiveTimer=setInterval(()=>{if(!document.hidden)compactRefreshLive(liveCourse);},10*60*1000);
 }
 async function loadRadar(lat,lon){try{let d=await fetch("https://api.rainviewer.com/public/weather-maps.json").then(r=>r.json());let frames=d.radar?.past||[];if(!frames.length)throw Error("目前沒有雷達影像");let f=frames[frames.length-1];$("radarImg").src=`${d.host}${f.path}/256/7/${lat}/${lon}/2/1_1.png`;$("radarStatus").textContent="雷達影像時間："+new Date(f.time*1000).toLocaleString("zh-TW")+"｜Weather data by RainViewer";}catch(e){$("radarStatus").textContent="雷達影像暫時無法載入："+e.message}}
 
