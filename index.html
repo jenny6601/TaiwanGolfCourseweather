@@ -188,6 +188,22 @@ footer{padding:10px 2px;font-size:11px}
  .compact-primary .tablewrap .feel-temp{color:#dc2626!important}
 }
 
+
+/* V32.2：精簡版即時觀測卡 */
+.compact-live{border:1px solid #c9dcd2;background:#fff;margin:0 0 10px;padding:12px;border-radius:12px}
+.compact-live-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+.compact-live-head h3{font-size:17px;margin:0;color:#155b43}
+#compactLiveBadge{font-size:11px;font-weight:800;border-radius:99px;background:#edf2f7;color:#475569;padding:4px 8px;white-space:nowrap}
+#compactLiveBadge.ok{background:#e8f6ef;color:#16734c}#compactLiveBadge.stale{background:#fff1df;color:#9a5b00}#compactLiveBadge.fail{background:#feeceb;color:#b42318}
+.compact-live-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.compact-live-item{border:1px solid #e3e9ee;border-radius:9px;background:#f8fafc;padding:8px;min-width:0}
+.compact-live-item small{display:block;font-size:11px;color:#64748b;line-height:1.3}
+.compact-live-item strong{display:block;font-size:18px;line-height:1.35;color:#17212b;overflow-wrap:anywhere}
+.compact-live-item em{display:block;font-size:10px;color:#64748b;font-style:normal;margin-top:2px}
+.compact-live-empty{grid-column:1/-1;padding:12px;background:#f8fafc;border-radius:9px;color:#64748b;font-size:12px}
+.compact-live-meta,.compact-live-foot{font-size:10px;color:#64748b;line-height:1.45;margin-top:8px}
+@media(max-width:600px){.compact-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.compact-live-item strong{font-size:17px}.compact-live{padding:10px}}
+
 </style>
 
 <style id="v31-6-mobile-seven-columns">
@@ -226,7 +242,14 @@ footer{padding:10px 2px;font-size:11px}
 <div class="muted" id="courseAutoStatus" style="margin:4px 0 12px">選擇日期與球場，立即查看四項天氣資訊。全台57座球場可由縣市篩選。</div>
 <div aria-label="57座高爾夫球場" class="course-list" id="courseList"></div>
 <div class="quick-course-wrap"><div class="quick-course-title">⭐ 常用球場（快速選擇）</div><div class="quick-course-buttons" id="quickCourseButtons"><button data-quick-course="東方" type="button">東方</button><button data-quick-course="礁溪" type="button">礁溪</button><button data-quick-course="美麗華" type="button">美麗華</button><button data-quick-course="林口" type="button">林口</button><button data-quick-course="大溪" type="button">大溪</button></div></div>
-</section><section class="card compact-primary"><h3>① 逐時天氣預報（06:00–18:00）</h3><div class="legend"><span><svg viewBox="0 0 40 32" aria-hidden="true"><circle cx="20" cy="16" r="7.5" fill="#fbbf24" stroke="#92400e" stroke-width="1.8"/><path d="M20 1v5m0 20v5M5 16h5m20 0h5M9.4 5.4 13 9m14 14 3.6 3.6M30.6 5.4 27 9M13 23l-3.6 3.6" stroke="#92400e" stroke-width="2.2" stroke-linecap="round"/></svg> 晴朗</span><span><svg viewBox="0 0 40 32" aria-hidden="true"><circle cx="12" cy="10" r="6" fill="#fbbf24" stroke="#92400e" stroke-width="1.5"/><path d="M12 1v3m0 12v3M3 10h3m12 0h3M5.5 3.5l2.2 2.2m8.6 8.6 2.2 2.2m0-13-2.2 2.2m-8.6 8.6-2.2 2.2" stroke="#b45309" stroke-width="1.8" stroke-linecap="round"/><path d="M10 24a7 7 0 0 1 1-14 10 10 0 0 1 18 3 6 6 0 0 1 2 11Z" fill="#fff" stroke="#111827" stroke-width="1.8"/></svg> 多雲</span><span><svg viewBox="0 0 40 32" aria-hidden="true"><path d="M7 21a8 8 0 0 1 1-16 11 11 0 0 1 20 3 7 7 0 0 1 2 13Z" fill="#3b4652"/><path d="m9 23-2 5m8-5-2 5m8-5-2 5m8-5-2 5m-12 1-2 5m8-5-2 5m8-5-2 5" stroke="#3182ce" stroke-width="2.1" stroke-linecap="round"/></svg> 下雨</span><span><svg viewBox="0 0 40 32" aria-hidden="true"><path d="M7 19a8 8 0 0 1 1-15 11 11 0 0 1 20 3 7 7 0 0 1 2 12Z" fill="#3b4652" stroke="#111827" stroke-width="1.5"/><path d="m15 18-4 7m12-7-4 7" stroke="#3182ce" stroke-width="2" stroke-linecap="round"/><path d="m23 12-5 8h5l-2 6 7-9h-5l2-5Z" fill="#facc15"/></svg> 雷雨</span><span><svg viewBox="0 0 550 354" aria-hidden="true" style="width:46px;height:30px;vertical-align:-8px;margin-right:3px"><g fill="none" stroke="#111318" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M120 198C122 88 208 5 331 5c123 0 211 98 214 231 1 47-55 56-120 34"/><path d="M120 198C210 191 323 217 425 270"/><path d="M350 237C344 177 341 91 331 5"/><path d="M238 204C238 120 269 43 331 5"/><path d="M120 198C91 216 47 240 18 259C-2 273 21 298 54 304c35 7 63-10 87-1 31 11 42 42 91 46 53 4 91-36 118-75l75-4"/></g></svg> 低降雨機率（0–29%）</span><span><svg viewBox="0 0 48 42" aria-hidden="true" style="width:36px;height:32px;vertical-align:-8px"><path d="M17 10Q17 3 24 3Q31 3 31 10L37 14 45 26 39 31 34 25 34 39H14V25L9 31 3 26 11 14Z" fill="#FDE047" stroke="#854D0E" stroke-width="2.2" stroke-linejoin="round"/><path d="M17 10Q24 18 31 10M17 10 13 16M31 10l4 6" fill="none" stroke="#A16207" stroke-width="1.8" stroke-linejoin="round"/><path d="M24 17v21M21 23h2m2 0h2" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round"/><path d="M15 34h18M7 27l4 2m30-2-4 2" stroke="#A16207" stroke-width="1.6" stroke-linecap="round"/></svg> 中降雨機率（30–59%）</span><span><svg viewBox="0 0 40 36" aria-hidden="true" style="width:27px;height:25px;vertical-align:-5px"><path d="M4 17Q5 5 20 4Q35 5 36 17Q32 14 28 17Q24 14 20 17Q16 14 12 17Q8 14 4 17Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="2" stroke-linejoin="round"/><path d="M20 17V29Q20 34 25 32" fill="none" stroke="#1f2937" stroke-width="2.8" stroke-linecap="round"/><path d="M9 22l-2 4m12-4-2 4m12-4-2 4" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/></svg> 高降雨機率（60–100%）</span></div><div class="muted" id="tableNote">固定列出06:00至18:00共13個時段。手機版同時顯示時間、天氣、降雨機率、雨量、氣溫、體感及降雨判讀七欄；其他氣象欄位仍保留於桌機版。已過去但API沒有回傳的時段會標示「無資料」，不會以推測值補齊。</div><div class="tablewrap"><table><thead><tr><th>🕒 時間</th><th>🌤️ 天氣</th><th>☔ 機率<br>%</th><th>🌧️ 雨量<br>mm</th><th>🌡️ 氣溫<br>°C</th><th>🥵 體感<br>°C</th><th>☔ 降雨判讀</th><th>風速 km/h</th><th>陣風 km/h</th><th>風向</th><th>濕度</th><th>雲量</th><th>UV</th><th>打球參考分數</th></tr></thead><tbody id="hourRows"><tr><td colspan="13">尚無資料</td></tr></tbody></table></div></section><section class="card rain-chart-card compact-primary"><h3>② 每小時降雨機率圖（%）</h3><canvas height="240" id="rainChart" width="600"></canvas><p class="muted">以系集成員逐時降雨量大於 0.1 mm 的比例估算；這是模式機率，尚非台灣球場歷史校準後的真實機率。</p></section><section class="card rain-chart-card compact-primary"><h3>③ 每小時預報雨量圖（mm）</h3><canvas height="240" id="rainAmountChart" width="600"></canvas><p class="muted">顯示五個確定性模式逐時雨量中位數；模式範圍另作不確定性參考。</p></section><section class="card compact-primary">
+</section>
+<section class="card compact-live" id="compactLivePanel" aria-live="polite">
+ <div class="compact-live-head"><h3>📡 即時天氣觀測</h3><span id="compactLiveBadge">等待球場選擇</span></div>
+ <div class="compact-live-grid" id="compactLiveMetrics"><div class="compact-live-empty">選擇球場後，自動載入附近氣象站最新觀測。</div></div>
+ <div class="compact-live-meta" id="compactLiveMeta">資料來源：中央氣象署自動氣象站／雨量站｜每 10 分鐘更新資料</div>
+ <div class="compact-live-foot" id="compactLiveFoot">即時觀測為附近氣象站資料，並非球場場內感測器；各欄位觀測時間可能不同。</div>
+</section>
+<section class="card compact-primary"><h3>① 逐時天氣預報（06:00–18:00）</h3><div class="legend"><span><svg viewBox="0 0 40 32" aria-hidden="true"><circle cx="20" cy="16" r="7.5" fill="#fbbf24" stroke="#92400e" stroke-width="1.8"/><path d="M20 1v5m0 20v5M5 16h5m20 0h5M9.4 5.4 13 9m14 14 3.6 3.6M30.6 5.4 27 9M13 23l-3.6 3.6" stroke="#92400e" stroke-width="2.2" stroke-linecap="round"/></svg> 晴朗</span><span><svg viewBox="0 0 40 32" aria-hidden="true"><circle cx="12" cy="10" r="6" fill="#fbbf24" stroke="#92400e" stroke-width="1.5"/><path d="M12 1v3m0 12v3M3 10h3m12 0h3M5.5 3.5l2.2 2.2m8.6 8.6 2.2 2.2m0-13-2.2 2.2m-8.6 8.6-2.2 2.2" stroke="#b45309" stroke-width="1.8" stroke-linecap="round"/><path d="M10 24a7 7 0 0 1 1-14 10 10 0 0 1 18 3 6 6 0 0 1 2 11Z" fill="#fff" stroke="#111827" stroke-width="1.8"/></svg> 多雲</span><span><svg viewBox="0 0 40 32" aria-hidden="true"><path d="M7 21a8 8 0 0 1 1-16 11 11 0 0 1 20 3 7 7 0 0 1 2 13Z" fill="#3b4652"/><path d="m9 23-2 5m8-5-2 5m8-5-2 5m8-5-2 5m-12 1-2 5m8-5-2 5m8-5-2 5" stroke="#3182ce" stroke-width="2.1" stroke-linecap="round"/></svg> 下雨</span><span><svg viewBox="0 0 40 32" aria-hidden="true"><path d="M7 19a8 8 0 0 1 1-15 11 11 0 0 1 20 3 7 7 0 0 1 2 12Z" fill="#3b4652" stroke="#111827" stroke-width="1.5"/><path d="m15 18-4 7m12-7-4 7" stroke="#3182ce" stroke-width="2" stroke-linecap="round"/><path d="m23 12-5 8h5l-2 6 7-9h-5l2-5Z" fill="#facc15"/></svg> 雷雨</span><span><svg viewBox="0 0 550 354" aria-hidden="true" style="width:46px;height:30px;vertical-align:-8px;margin-right:3px"><g fill="none" stroke="#111318" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M120 198C122 88 208 5 331 5c123 0 211 98 214 231 1 47-55 56-120 34"/><path d="M120 198C210 191 323 217 425 270"/><path d="M350 237C344 177 341 91 331 5"/><path d="M238 204C238 120 269 43 331 5"/><path d="M120 198C91 216 47 240 18 259C-2 273 21 298 54 304c35 7 63-10 87-1 31 11 42 42 91 46 53 4 91-36 118-75l75-4"/></g></svg> 低降雨機率（0–29%）</span><span><svg viewBox="0 0 48 42" aria-hidden="true" style="width:36px;height:32px;vertical-align:-8px"><path d="M17 10Q17 3 24 3Q31 3 31 10L37 14 45 26 39 31 34 25 34 39H14V25L9 31 3 26 11 14Z" fill="#FDE047" stroke="#854D0E" stroke-width="2.2" stroke-linejoin="round"/><path d="M17 10Q24 18 31 10M17 10 13 16M31 10l4 6" fill="none" stroke="#A16207" stroke-width="1.8" stroke-linejoin="round"/><path d="M24 17v21M21 23h2m2 0h2" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round"/><path d="M15 34h18M7 27l4 2m30-2-4 2" stroke="#A16207" stroke-width="1.6" stroke-linecap="round"/></svg> 中降雨機率（30–59%）</span><span><svg viewBox="0 0 40 36" aria-hidden="true" style="width:27px;height:25px;vertical-align:-5px"><path d="M4 17Q5 5 20 4Q35 5 36 17Q32 14 28 17Q24 14 20 17Q16 14 12 17Q8 14 4 17Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="2" stroke-linejoin="round"/><path d="M20 17V29Q20 34 25 32" fill="none" stroke="#1f2937" stroke-width="2.8" stroke-linecap="round"/><path d="M9 22l-2 4m12-4-2 4m12-4-2 4" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/></svg> 高降雨機率（60–100%）</span></div><div class="muted" id="tableNote">固定列出06:00至18:00共13個時段。手機版同時顯示時間、天氣、降雨機率、雨量、氣溫、體感及降雨判讀七欄；其他氣象欄位仍保留於桌機版。已過去但API沒有回傳的時段會標示「無資料」，不會以推測值補齊。</div><div class="tablewrap"><table><thead><tr><th>🕒 時間</th><th>🌤️ 天氣</th><th>☔ 機率<br>%</th><th>🌧️ 雨量<br>mm</th><th>🌡️ 氣溫<br>°C</th><th>🥵 體感<br>°C</th><th>☔ 降雨判讀</th><th>風速 km/h</th><th>陣風 km/h</th><th>風向</th><th>濕度</th><th>雲量</th><th>UV</th><th>打球參考分數</th></tr></thead><tbody id="hourRows"><tr><td colspan="13">尚無資料</td></tr></tbody></table></div></section><section class="card rain-chart-card compact-primary"><h3>② 每小時降雨機率圖（%）</h3><canvas height="240" id="rainChart" width="600"></canvas><p class="muted">以系集成員逐時降雨量大於 0.1 mm 的比例估算；這是模式機率，尚非台灣球場歷史校準後的真實機率。</p></section><section class="card rain-chart-card compact-primary"><h3>③ 每小時預報雨量圖（mm）</h3><canvas height="240" id="rainAmountChart" width="600"></canvas><p class="muted">顯示五個確定性模式逐時雨量中位數；模式範圍另作不確定性參考。</p></section><section class="card compact-primary">
 <h3>④ 逐小時氣溫與體感溫度（°C）</h3>
 <canvas height="260" id="tempChart" width="900"></canvas>
 <div class="legend"><span style="color:#1769aa;font-weight:800">🔵 氣溫（2公尺高度）</span><span class="feel-label">🔴 體感溫度（Apparent temperature）</span></div>
@@ -1402,9 +1425,58 @@ async function loadV28ProviderCache(courseName,date){
  }catch(e){status.textContent="外部服務資料尚未啟用："+e.message+"。請先完成 API 授權及 GitHub Actions 後端介接；原有五模式預報不受影響。";}
 }
 
+
+/* V32.2：讀取完整版已發布 JSON，精簡版不建立第二套資料收集流程 */
+const COMPACT_LIVE_URL="https://jenny6601.github.io/Taiwan-Golf-Weather/data/live_observations.json";
+let compactLiveSnapshot=null,compactLiveTimer=null;
+function compactNormalizeName(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[（(].*?[）)]/g,"").replace(/[\s　·•、，,._-]/g,"").replace(/高爾夫|球場|俱樂部|球會/g,"");}
+function compactDistanceKm(a,b){const rad=x=>x*Math.PI/180,dLat=rad(Number(b.latitude)-a.lat),dLon=rad(Number(b.longitude)-a.lon),x=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(Number(b.latitude)))*Math.sin(dLon/2)**2;return 6371*2*Math.asin(Math.sqrt(x));}
+function compactFindLiveCourse(course){
+ if(!compactLiveSnapshot||!course)return null;
+ const records=Object.values(compactLiveSnapshot.courses||{}),name=compactNormalizeName(course.name);
+ const exact=records.filter(x=>compactNormalizeName(x.course_name)===name);
+ if(exact.length===1)return {record:exact[0],method:"球場名稱完全匹配",distance:compactDistanceKm(course,exact[0])};
+ const scored=records.map(record=>({record,distance:compactDistanceKm(course,record),name:compactNormalizeName(record.course_name)}))
+  .filter(x=>x.distance<=2.5&&x.name&&name&&(x.name.includes(name)||name.includes(x.name))).sort((a,b)=>a.distance-b.distance);
+ if(scored.length&&(scored.length===1||scored[1].distance-scored[0].distance>=0.8))return {record:scored[0].record,method:"名稱＋座標核對",distance:scored[0].distance};
+ return null;
+}
+function compactFmt(v,unit="",digits=1){return v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v).toFixed(digits)+unit:"—";}
+function compactObservedTime(station){if(!station?.observed_at)return "時間未提供";const d=new Date(station.observed_at);return Number.isNaN(d.getTime())?"時間未提供":d.toLocaleString("zh-TW",{timeZone:"Asia/Taipei",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false});}
+function compactRainLabel(v,period){if(v===null||v===undefined||!Number.isFinite(Number(v)))return "—";const n=Number(v),tag=period==="past_10_minutes"?"10 分鐘":period==="past_1_hour"?"1 小時":"今日累積";return n===0?"無雨｜"+tag:(n<2.5?"有降雨｜":"較大雨量｜")+tag;}
+function compactRenderLive(course){
+ const grid=document.getElementById("compactLiveMetrics"),badge=document.getElementById("compactLiveBadge"),meta=document.getElementById("compactLiveMeta"),foot=document.getElementById("compactLiveFoot");if(!grid||!badge||!meta||!foot)return;
+ if(!compactLiveSnapshot){grid.innerHTML='<div class="compact-live-empty">即時觀測資料暫時無法取得；原有逐時預報仍可正常使用。</div>';badge.textContent="資料暫不可用";badge.className="fail";return;}
+ const match=compactFindLiveCourse(course);
+ if(!match){grid.innerHTML='<div class="compact-live-empty">此球場尚無安全且唯一的即時資料配對，暫不顯示觀測數值。</div>';badge.textContent="尚無配對";badge.className="stale";meta.textContent="即時觀測資料共 "+(compactLiveSnapshot.course_count||0)+" 座球場；本球場未找到唯一匹配。";return;}
+ const r=match.record,w=r.weather||{},rain=r.rainfall||{},ws=w.station||{},rs=rain.station||{};
+ const age=Math.max(Number(ws.observation_age_minutes)||0,Number(rs.observation_age_minutes)||0),stale=age>120;
+ badge.textContent=stale?"觀測資料較舊":"附近測站資料";badge.className=stale?"stale":"ok";
+ const cells=[
+  ["天氣",w.weather_text||"—",compactObservedTime(ws)],
+  ["氣溫",compactFmt(w.temperature_c," °C"),"氣象站："+(ws.name||"—")],
+  ["相對濕度",compactFmt(w.relative_humidity_pct," %",0),"氣象站觀測"],
+  ["風速",compactFmt(w.wind_speed_ms===null?null:w.wind_speed_ms*3.6," km/h"),"陣風 "+compactFmt(w.wind_gust_ms===null?null:w.wind_gust_ms*3.6," km/h")],
+  ["10 分鐘雨量",compactFmt(rain.precipitation_10m_mm," mm"),compactRainLabel(rain.precipitation_10m_mm,"past_10_minutes")],
+  ["過去 1 小時雨量",compactFmt(rain.precipitation_1h_mm," mm"),compactRainLabel(rain.precipitation_1h_mm,"past_1_hour")],
+  ["今日累積雨量",compactFmt(w.precipitation_mm," mm"),"截至氣象站觀測時間｜非短時雨量"],
+  ["風向",Number.isFinite(Number(w.wind_direction_deg))?Math.round(w.wind_direction_deg)+"°":"—","氣象站觀測"],
+  ["體感溫度","—","觀測資料未提供，不以預報值替代"]
+ ];
+ grid.innerHTML=cells.map(x=>'<div class="compact-live-item"><small>'+x[0]+'</small><strong>'+x[1]+'</strong><em>'+x[2]+'</em></div>').join("");
+ meta.textContent="配對："+match.method+"｜距球場約 "+match.distance.toFixed(1)+" km｜氣象站 "+(ws.name||"—")+"（"+compactObservedTime(ws)+"）｜雨量站 "+(rs.name||"—")+"（"+compactObservedTime(rs)+"）";
+ foot.textContent="資料產生："+new Date(compactLiveSnapshot.generated_at).toLocaleString("zh-TW",{timeZone:"Asia/Taipei",hour12:false})+"｜資料更新週期約 "+(compactLiveSnapshot.refresh_interval_minutes||10)+" 分鐘。即時資料來自附近測站，不代表球場場內實測。";
+}
+async function compactRefreshLive(course){
+ try{const r=await fetch(COMPACT_LIVE_URL+"?ts="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();if(!d.courses||!d.generated_at)throw Error("即時觀測 JSON 格式不完整");compactLiveSnapshot=d;compactRenderLive(course);}
+ catch(e){const grid=document.getElementById("compactLiveMetrics"),badge=document.getElementById("compactLiveBadge");if(grid)grid.innerHTML='<div class="compact-live-empty">即時資料載入失敗：'+String(e.message).replace(/[<>]/g,"")+'。稍後將自動重試，預報不受影響。</div>';if(badge){badge.textContent="讀取失敗";badge.className="fail";}}
+}
+
 async function loadForecast(p,date){
  if(!date)throw Error("請先選擇預報日期。");
  active={lat:Number(p.lat),lon:Number(p.lon),name:p.name,date,rows:[],modelRows:{}};
+ const liveCourse={name:p.name,lat:Number(p.lat),lon:Number(p.lon)};
+ if(!compactLiveSnapshot)await compactRefreshLive(liveCourse);else compactRenderLive(liveCourse);
  $("locname").textContent=p.name;
  $("coords").textContent=`${p.address||""}｜${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}｜固定座標`;
  $("status").textContent="正在以球場座標取得五組氣象模型資料…";
@@ -1444,6 +1516,8 @@ async function loadForecast(p,date){
  $("courseAutoStatus").textContent=`${p.name}｜${date}｜座標 ${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}｜氣象分析完成`;
  loadRadar(p.lat,p.lon);
  loadV28ProviderCache(p.name,date);
+ if(compactLiveTimer)clearInterval(compactLiveTimer);
+ compactLiveTimer=setInterval(()=>compactRefreshLive(liveCourse),10*60*1000);
 }
 async function loadRadar(lat,lon){try{let d=await fetch("https://api.rainviewer.com/public/weather-maps.json").then(r=>r.json());let frames=d.radar?.past||[];if(!frames.length)throw Error("目前沒有雷達影像");let f=frames[frames.length-1];$("radarImg").src=`${d.host}${f.path}/256/7/${lat}/${lon}/2/1_1.png`;$("radarStatus").textContent="雷達影像時間："+new Date(f.time*1000).toLocaleString("zh-TW")+"｜Weather data by RainViewer";}catch(e){$("radarStatus").textContent="雷達影像暫時無法載入："+e.message}}
 
